@@ -3,28 +3,51 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 )
-
+// TODO Refactor JSON building
 func AddHandler(w http.ResponseWriter, r *http.Request) {
-	s := `{“action”: “add”, “x”: 2, “y”: 5, “answer”, 7, “cached”: false}`
-	query := r.URL.Query()
+	// TODO Extract x, y check to function
+	x, err := strconv.ParseFloat(r.URL.Query().Get("x"), 64)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		response := fmt.Sprintf(`{"code": %v, "message": "%v"}`, 1, err.Error())
+		fmt.Fprintf(w, response)
+		return
+	}
 
-	fmt.Printf("Query params: %v\n", query)
-	fmt.Fprintf(w, s)
-	fmt.Println("Endpoint Hit: /add")
+	y, err := strconv.ParseFloat(r.URL.Query().Get("y"), 64)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		response := fmt.Sprintf(`{"code": %v, "message": "%v"}`, 1, err.Error())
+		fmt.Fprintf(w, response)
+		return
+	}
+
+	answer := x + y
+
+	response := fmt.Sprintf(`{"action": "add", "x": %v, "y": %v, "answer", %v, "cached": false}`, x, y, answer)
+
+	w.WriteHeader(http.StatusOK)
+
+	fmt.Fprintf(w, response)
+
 }
 
 func SubtractHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, `{"result": true}`)
-	fmt.Println("Endpoint Hit: /subtract")
 }
 
 func DivideHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, `{"result": true}`)
-	fmt.Println("Endpoint Hit: /divide")
 }
 
 func MultiplyHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, `{"result": true}`)
-	fmt.Println("Endpoint Hit: /multiply")
 }
+
+/*
+func extractParams(r *http.Request) (x float64, y float64, err error) {
+
+}
+ */
