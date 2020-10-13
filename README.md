@@ -21,7 +21,12 @@ Create math logic, connect it to http handlers and then test until it works. :)
 **13.10.2020**
 
 - Package separation and simple math logic implementation.
-- REST handlers implementation.
+- REST handlers implementation, first draft version.
+
+**14.10.2020**
+
+- REST handlers implementation second draft version.
+- Table tests for REST handlers.
 
 
 ## Questions
