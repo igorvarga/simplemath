@@ -1,16 +1,20 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 )
 
 func TestAddHandler(t *testing.T) {
-	u := fmt.Sprintf("/add?x=%v&=%v", 2, 5)
+	values := url.Values{
+		"x": {"2"},
+		"y": {"5"}}
 
-	req, err := http.NewRequest("GET", u, nil)
+	url := url.URL{Path: "/add", RawQuery: values.Encode()}
+
+	req, err := http.NewRequest("GET", url.String(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -24,7 +28,7 @@ func TestAddHandler(t *testing.T) {
 			status, http.StatusOK)
 	}
 
-	expected := `{"result": true}`
+	expected := `{“action”: “add”, “x”: 2, “y”: 5, “answer”, 7, “cached”: false}`
 	if rr.Body.String() != expected {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			rr.Body.String(), expected)
