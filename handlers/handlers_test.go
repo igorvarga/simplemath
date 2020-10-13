@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"testing"
 )
+
 var basicmathtests = []struct {
 	x        string
 	y        string
@@ -97,32 +98,3 @@ func TestAddHandlerYMissing(t *testing.T) {
 			status, http.StatusBadRequest)
 	}
 }
-
-func TestSubtractHandler(t *testing.T) {
-	values := url.Values{
-		"x": {"2"},
-		"y": {"5"}}
-
-	url := url.URL{Path: "/add", RawQuery: values.Encode()}
-
-	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(SubtractHandler)
-	handler.ServeHTTP(rr, req)
-
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("Handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
-	}
-
-	expected := `{"action": "subtract", "x": 2, "y": 5, "answer", -3, "cached": false}`
-	if rr.Body.String() != expected {
-		t.Errorf("Handler returned unexpected body: got %v want %v",
-			rr.Body.String(), expected)
-	}
-}
-
