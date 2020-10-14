@@ -1,9 +1,9 @@
-package handler
+package std
 
 import (
 	"encoding/json"
 	"github.com/igorvarga/teletchcodechallenge/message"
-	sm "github.com/igorvarga/teletchcodechallenge/simplemath"
+	"github.com/igorvarga/teletchcodechallenge/simplemath"
 	"net/http"
 	"strconv"
 )
@@ -14,7 +14,7 @@ func AddHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	answer := sm.Add(x, y)
+	answer := simplemath.Add(x, y)
 
 	writeResult(w, x, y, answer, message.Add)
 }
@@ -25,7 +25,7 @@ func SubtractHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	answer := sm.Subtract(x, y)
+	answer := simplemath.Subtract(x, y)
 
 	writeResult(w, x, y, answer, message.Subtract)
 }
@@ -36,7 +36,7 @@ func DivideHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	answer := sm.Divide(x, y)
+	answer := simplemath.Divide(x, y)
 
 	writeResult(w, x, y, answer, message.Divide)
 }
@@ -47,7 +47,7 @@ func MultiplyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	answer := sm.Multiply(x, y)
+	answer := simplemath.Multiply(x, y)
 
 	writeResult(w, x, y, answer, message.Multiply)
 }
@@ -79,7 +79,7 @@ func writeResult(w http.ResponseWriter, x float64, y float64, answer float64, ac
 
 	b, err := json.Marshal(result)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

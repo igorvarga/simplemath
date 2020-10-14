@@ -1,5 +1,6 @@
 package message
 
+// TODO add error message const
 const (
 	Add      = "add"
 	Subtract = "subtract"

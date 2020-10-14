@@ -1,7 +1,7 @@
 package main
 
 import (
-	h "github.com/igorvarga/teletchcodechallenge/handler"
+	"github.com/igorvarga/teletchcodechallenge/handler/std"
 	"log"
 	"net/http"
 )
@@ -11,10 +11,10 @@ import (
 // TODO Add logging
 
 func handleRequests() {
-	http.HandleFunc("/add", h.AddHandler)
-	http.HandleFunc("/subtract", h.SubtractHandler)
-	http.HandleFunc("/divide", h.DivideHandler)
-	http.HandleFunc("/multiply", h.MultiplyHandler)
+	http.HandleFunc("/add", std.AddHandler)
+	http.HandleFunc("/subtract", std.SubtractHandler)
+	http.HandleFunc("/divide", std.DivideHandler)
+	http.HandleFunc("/multiply", std.MultiplyHandler)
 
 	log.Fatal(http.ListenAndServe(":10000", nil))
 }
