@@ -1,4 +1,4 @@
-package handler
+package std
 
 import (
 	"encoding/json"
@@ -11,21 +11,21 @@ import (
 )
 
 var basicmathtests = []struct {
-	x        float64
-	y        float64
-	expected float64
-	handler  http.HandlerFunc
-	name     string
-	action   string
-	path     string
-}{
-	{2, 5, 7, AddHandler, "AddHandler", message.Add,"/add"},
-	{2, 5, -3, SubtractHandler, "SubtractHandler", message.Subtract, "/subtract"},
-	{2, 5, 10, MultiplyHandler, "MultiplyHandler", message.Multiply, "/multiply"},
-	{10, 5, 2, DivideHandler, "DivideHandler", message.Divide, "/divide"},
-}
+		x        float64
+		y        float64
+		expected float64
+		handler  http.HandlerFunc
+		name     string
+		action   string
+		path     string
+	}{
+		{x: 2, y: 5, expected: 7, handler: AddHandler, name: "AddHandler", action: message.ActionAdd, path: "/add"},
+		{x: 2, y: 5, expected: -3, handler: SubtractHandler, name: "SubtractHandler", action: message.ActionSubtract, path: "/subtract"},
+		{x: 2, y: 5, expected: 10, handler: MultiplyHandler, name: "MultiplyHandler", action: message.ActionMultiply, path: "/multiply"},
+		{x: 10, y: 5, expected: 2, handler: DivideHandler, name: "DivideHandler", action: message.ActionDivide, path: "/divide"},
+	}
 
-func TestMathHandlers(t *testing.T) {
+func TestMathHTTPHandlers(t *testing.T) {
 
 	for _, mt := range basicmathtests {
 		t.Run(mt.name, func(t *testing.T) {
@@ -49,8 +49,8 @@ func TestMathHandlers(t *testing.T) {
 					status, http.StatusOK)
 			}
 
-			// expected := fmt.Sprintf(`{"action": "%v", "x": %v, "y": %v, "answer", %v, "cached": false}`, mt.action, mt.x, mt.y, mt.expected)
 			expected, err := json.Marshal(message.ResultMessage{
+				Action: mt.action,
 				X:      mt.x,
 				Y:      mt.y,
 				Answer: mt.expected,
@@ -60,9 +60,11 @@ func TestMathHandlers(t *testing.T) {
 				t.Errorf("Error encoding JSON")
 			}
 
-			if rr.Body.String() != string(expected) {
+			es := string(expected)
+
+			if rr.Body.String() != es {
 				t.Errorf("Handler returned unexpected body: got %v want %v",
-					rr.Body.String(), expected)
+					rr.Body.String(), es)
 			}
 		})
 	}

@@ -1,10 +1,11 @@
 package message
 
+// TODO add error message const
 const (
-	Add     = "add"
-	Subtract    = "subtract"
-	Divide    = "divide"
-	Multiply     = "multiply"
+	ActionAdd      = "add"
+	ActionSubtract = "subtract"
+	ActionDivide   = "divide"
+	ActionMultiply = "multiply"
 )
 
 type ResultMessage struct {
@@ -13,4 +14,9 @@ type ResultMessage struct {
 	Y      float64 `json:"y"`
 	Answer float64 `json:"answer"`
 	Cached bool    `json:"cached"`
+}
+
+type ErrorMessage struct {
+	Code  string `json:"code"`
+	Error string `json:"message"`
 }

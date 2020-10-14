@@ -27,6 +27,7 @@ Create math logic, connect it to http handlers and then test until it works. :)
 
 - REST handlers implementation second draft version.
 - Table tests for REST handlers.
+- JSON marshalling, refactoring
 
 
 ## Questions
