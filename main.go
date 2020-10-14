@@ -1,10 +1,13 @@
 package main
 
 import (
-	h "github.com/igorvarga/teletchcodechallenge/handlers"
+	h "github.com/igorvarga/teletchcodechallenge/handler"
 	"log"
 	"net/http"
 )
+
+// TODO Add REST API versioning
+// TODO Add godoc
 
 func handleRequests() {
 	http.HandleFunc("/add", h.AddHandler)

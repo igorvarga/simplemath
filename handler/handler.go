@@ -1,13 +1,14 @@
-package handlers
+package handler
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/igorvarga/teletchcodechallenge/message"
 	sm "github.com/igorvarga/teletchcodechallenge/simplemath"
 	"net/http"
 	"strconv"
 )
 
-// TODO Refactor JSON building
 func AddHandler(w http.ResponseWriter, r *http.Request) {
 	x, y, err := extractParams(w, r)
 	if err != nil {
@@ -16,11 +17,7 @@ func AddHandler(w http.ResponseWriter, r *http.Request) {
 
 	answer := sm.Add(x, y)
 
-	response := fmt.Sprintf(`{"action": "add", "x": %v, "y": %v, "answer", %v, "cached": false}`, x, y, answer)
-
-	w.WriteHeader(http.StatusOK)
-
-	fmt.Fprintf(w, response)
+	writeResult(w, x, y, answer, message.Add)
 }
 
 func SubtractHandler(w http.ResponseWriter, r *http.Request) {
@@ -31,11 +28,7 @@ func SubtractHandler(w http.ResponseWriter, r *http.Request) {
 
 	answer := sm.Subtract(x, y)
 
-	response := fmt.Sprintf(`{"action": "subtract", "x": %v, "y": %v, "answer", %v, "cached": false}`, x, y, answer)
-
-	w.WriteHeader(http.StatusOK)
-
-	fmt.Fprintf(w, response)
+	writeResult(w, x, y, answer, message.Subtract)
 }
 
 func DivideHandler(w http.ResponseWriter, r *http.Request) {
@@ -46,11 +39,7 @@ func DivideHandler(w http.ResponseWriter, r *http.Request) {
 
 	answer := sm.Divide(x, y)
 
-	response := fmt.Sprintf(`{"action": "divide", "x": %v, "y": %v, "answer", %v, "cached": false}`, x, y, answer)
-
-	w.WriteHeader(http.StatusOK)
-
-	fmt.Fprintf(w, response)
+	writeResult(w, x, y, answer, message.Divide)
 }
 
 func MultiplyHandler(w http.ResponseWriter, r *http.Request) {
@@ -61,11 +50,7 @@ func MultiplyHandler(w http.ResponseWriter, r *http.Request) {
 
 	answer := sm.Multiply(x, y)
 
-	response := fmt.Sprintf(`{"action": "multiply", "x": %v, "y": %v, "answer", %v, "cached": false}`, x, y, answer)
-
-	w.WriteHeader(http.StatusOK)
-
-	fmt.Fprintf(w, response)
+	writeResult(w, x, y, answer, message.Multiply)
 }
 
 func extractParams(w http.ResponseWriter, r *http.Request) (x float64, y float64, err error) {
@@ -87,4 +72,17 @@ func extractParams(w http.ResponseWriter, r *http.Request) (x float64, y float64
 	}
 
 	return x, y, err
+}
+
+func writeResult(w http.ResponseWriter, x float64, y float64, answer float64, action string) {
+	result := message.ResultMessage{X: x, Y: y, Answer: answer}
+
+	b, err := json.Marshal(result)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(b)
 }

@@ -1,7 +1,9 @@
-package handlers
+package handler
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/igorvarga/teletchcodechallenge/message"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -9,18 +11,18 @@ import (
 )
 
 var basicmathtests = []struct {
-	x        string
-	y        string
-	expected string
+	x        float64
+	y        float64
+	expected float64
 	handler  http.HandlerFunc
 	name     string
 	action   string
 	path     string
 }{
-	{"2", "5", "7", AddHandler, "AddHandler", "add", "/add"},
-	{"2", "5", "-3", SubtractHandler, "SubtractHandler", "subtract", "/subtract"},
-	{"2", "5", "10", MultiplyHandler, "MultiplyHandler", "multiply", "/multiply"},
-	{"10", "5", "2", DivideHandler, "DivideHandler", "divide", "/divide"},
+	{2, 5, 7, AddHandler, "AddHandler", message.Add,"/add"},
+	{2, 5, -3, SubtractHandler, "SubtractHandler", message.Subtract, "/subtract"},
+	{2, 5, 10, MultiplyHandler, "MultiplyHandler", message.Multiply, "/multiply"},
+	{10, 5, 2, DivideHandler, "DivideHandler", message.Divide, "/divide"},
 }
 
 func TestMathHandlers(t *testing.T) {
@@ -28,8 +30,8 @@ func TestMathHandlers(t *testing.T) {
 	for _, mt := range basicmathtests {
 		t.Run(mt.name, func(t *testing.T) {
 			values := url.Values{
-				"x": {mt.x},
-				"y": {mt.y}}
+				"x": {fmt.Sprintf("%v", mt.x)},
+				"y": {fmt.Sprintf("%v", mt.y)}}
 
 			url := url.URL{Path: mt.path, RawQuery: values.Encode()}
 
@@ -47,8 +49,18 @@ func TestMathHandlers(t *testing.T) {
 					status, http.StatusOK)
 			}
 
-			expected := fmt.Sprintf(`{"action": "%v", "x": %v, "y": %v, "answer", %v, "cached": false}`, mt.action, mt.x, mt.y, mt.expected)
-			if rr.Body.String() != expected {
+			// expected := fmt.Sprintf(`{"action": "%v", "x": %v, "y": %v, "answer", %v, "cached": false}`, mt.action, mt.x, mt.y, mt.expected)
+			expected, err := json.Marshal(message.ResultMessage{
+				X:      mt.x,
+				Y:      mt.y,
+				Answer: mt.expected,
+				Cached: false,
+			})
+			if err != nil {
+				t.Errorf("Error encoding JSON")
+			}
+
+			if rr.Body.String() != string(expected) {
 				t.Errorf("Handler returned unexpected body: got %v want %v",
 					rr.Body.String(), expected)
 			}
@@ -63,7 +75,7 @@ func TestAddHandlerXMissing(t *testing.T) {
 
 	url := url.URL{Path: "/add", RawQuery: values.Encode()}
 
-	req, err := http.NewRequest("GET", url.String(), nil)
+	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -84,7 +96,7 @@ func TestAddHandlerYMissing(t *testing.T) {
 
 	url := url.URL{Path: "/add", RawQuery: values.Encode()}
 
-	req, err := http.NewRequest("GET", url.String(), nil)
+	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
