@@ -2,10 +2,10 @@ package message
 
 // TODO add error message const
 const (
-	Add      = "add"
-	Subtract = "subtract"
-	Divide   = "divide"
-	Multiply = "multiply"
+	ActionAdd      = "add"
+	ActionSubtract = "subtract"
+	ActionDivide   = "divide"
+	ActionMultiply = "multiply"
 )
 
 type ResultMessage struct {

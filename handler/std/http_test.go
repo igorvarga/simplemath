@@ -19,10 +19,10 @@ var basicmathtests = []struct {
 		action   string
 		path     string
 	}{
-		{x: 2, y: 5, expected: 7, handler: AddHandler, name: "AddHandler", action: message.Add, path: "/add"},
-		{x: 2, y: 5, expected: -3, handler: SubtractHandler, name: "SubtractHandler", action: message.Subtract, path: "/subtract"},
-		{x: 2, y: 5, expected: 10, handler: MultiplyHandler, name: "MultiplyHandler", action: message.Multiply, path: "/multiply"},
-		{x: 10, y: 5, expected: 2, handler: DivideHandler, name: "DivideHandler", action: message.Divide, path: "/divide"},
+		{x: 2, y: 5, expected: 7, handler: AddHandler, name: "AddHandler", action: message.ActionAdd, path: "/add"},
+		{x: 2, y: 5, expected: -3, handler: SubtractHandler, name: "SubtractHandler", action: message.ActionSubtract, path: "/subtract"},
+		{x: 2, y: 5, expected: 10, handler: MultiplyHandler, name: "MultiplyHandler", action: message.ActionMultiply, path: "/multiply"},
+		{x: 10, y: 5, expected: 2, handler: DivideHandler, name: "DivideHandler", action: message.ActionDivide, path: "/divide"},
 	}
 
 func TestMathHandlers(t *testing.T) {
