@@ -51,6 +51,7 @@ func TestMathHandlers(t *testing.T) {
 
 			// expected := fmt.Sprintf(`{"action": "%v", "x": %v, "y": %v, "answer", %v, "cached": false}`, mt.action, mt.x, mt.y, mt.expected)
 			expected, err := json.Marshal(message.ResultMessage{
+				Action: mt.action,
 				X:      mt.x,
 				Y:      mt.y,
 				Answer: mt.expected,
@@ -60,9 +61,11 @@ func TestMathHandlers(t *testing.T) {
 				t.Errorf("Error encoding JSON")
 			}
 
-			if rr.Body.String() != string(expected) {
+			es := string(expected)
+
+			if rr.Body.String() != es {
 				t.Errorf("Handler returned unexpected body: got %v want %v",
-					rr.Body.String(), expected)
+					rr.Body.String(), es)
 			}
 		})
 	}

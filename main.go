@@ -8,6 +8,7 @@ import (
 
 // TODO Add REST API versioning
 // TODO Add godoc
+// TODO Add logging
 
 func handleRequests() {
 	http.HandleFunc("/add", h.AddHandler)

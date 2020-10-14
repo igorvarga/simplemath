@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/igorvarga/teletchcodechallenge/message"
 	sm "github.com/igorvarga/teletchcodechallenge/simplemath"
 	"net/http"
@@ -57,17 +56,13 @@ func extractParams(w http.ResponseWriter, r *http.Request) (x float64, y float64
 
 	x, err = strconv.ParseFloat(r.URL.Query().Get("x"), 64)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		response := fmt.Sprintf(`{"code": %v, "message": "%v"}`, 1, err.Error())
-		fmt.Fprintf(w, response)
+		writeError(w, "1", "Error parsing x parameter")
 		return x, y, err
 	}
 
 	y, err = strconv.ParseFloat(r.URL.Query().Get("y"), 64)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		response := fmt.Sprintf(`{"code": %v, "message": "%v"}`, 1, err.Error())
-		fmt.Fprintf(w, response)
+		writeError(w, "1", "Error parsing y parameter")
 		return x, y, err
 	}
 
@@ -75,7 +70,7 @@ func extractParams(w http.ResponseWriter, r *http.Request) (x float64, y float64
 }
 
 func writeResult(w http.ResponseWriter, x float64, y float64, answer float64, action string) {
-	result := message.ResultMessage{X: x, Y: y, Answer: answer}
+	result := message.ResultMessage{X: x, Y: y, Answer: answer, Action: action}
 
 	b, err := json.Marshal(result)
 	if err != nil {
@@ -84,5 +79,21 @@ func writeResult(w http.ResponseWriter, x float64, y float64, answer float64, ac
 	}
 
 	w.WriteHeader(http.StatusOK)
+	w.Write(b)
+}
+
+func writeError(w http.ResponseWriter, code string, error string) {
+	result := message.ErrorMessage{
+		Code: code,
+		Error: error,
+	}
+
+	b, err := json.Marshal(result)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusBadRequest)
 	w.Write(b)
 }

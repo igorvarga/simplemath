@@ -1,10 +1,10 @@
 package message
 
 const (
-	Add     = "add"
-	Subtract    = "subtract"
-	Divide    = "divide"
-	Multiply     = "multiply"
+	Add      = "add"
+	Subtract = "subtract"
+	Divide   = "divide"
+	Multiply = "multiply"
 )
 
 type ResultMessage struct {
@@ -13,4 +13,9 @@ type ResultMessage struct {
 	Y      float64 `json:"y"`
 	Answer float64 `json:"answer"`
 	Cached bool    `json:"cached"`
+}
+
+type ErrorMessage struct {
+	Code  string `json:"code"`
+	Error string `json:"message"`
 }
