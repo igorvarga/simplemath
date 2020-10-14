@@ -33,16 +33,15 @@ func TestMathHTTPHandlers(t *testing.T) {
 				"x": {fmt.Sprintf("%v", mt.x)},
 				"y": {fmt.Sprintf("%v", mt.y)}}
 
-			url := url.URL{Path: mt.path, RawQuery: values.Encode()}
+			testUrl := url.URL{Path: mt.path, RawQuery: values.Encode()}
 
-			req, err := http.NewRequest(http.MethodGet, url.String(), nil)
+			req, err := http.NewRequest(http.MethodGet, testUrl.String(), nil)
 			if err != nil {
 				t.Fatal(err)
 			}
 
 			rr := httptest.NewRecorder()
-			handler := http.HandlerFunc(mt.handler)
-			handler.ServeHTTP(rr, req)
+			mt.handler.ServeHTTP(rr, req)
 
 			if status := rr.Code; status != http.StatusOK {
 				t.Errorf("Handler returned wrong status code: got %v want %v",
@@ -75,9 +74,9 @@ func TestAddHandlerXMissing(t *testing.T) {
 	values := url.Values{
 		"y": {"5"}}
 
-	url := url.URL{Path: "/add", RawQuery: values.Encode()}
+	testUrl := url.URL{Path: "/add", RawQuery: values.Encode()}
 
-	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
+	req, err := http.NewRequest(http.MethodGet, testUrl.String(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -96,9 +95,9 @@ func TestAddHandlerYMissing(t *testing.T) {
 	values := url.Values{
 		"x": {"5"}}
 
-	url := url.URL{Path: "/add", RawQuery: values.Encode()}
+	testUrl := url.URL{Path: "/add", RawQuery: values.Encode()}
 
-	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
+	req, err := http.NewRequest(http.MethodGet, testUrl.String(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}

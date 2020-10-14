@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/igorvarga/teletchcodechallenge/message"
 	"github.com/igorvarga/teletchcodechallenge/simplemath"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -122,5 +123,8 @@ func writeJSON(w http.ResponseWriter, status int, v interface{}) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(status)
-	w.Write(b)
+
+	if _, err := w.Write(b); err != nil {
+		log.Println("Error writing bytes to response.")
+	}
 }
