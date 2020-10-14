@@ -70,7 +70,12 @@ func extractParams(w http.ResponseWriter, r *http.Request) (x float64, y float64
 }
 
 func writeResult(w http.ResponseWriter, x float64, y float64, answer float64, action string) {
-	result := message.ResultMessage{X: x, Y: y, Answer: answer, Action: action}
+	result := message.ResultMessage{
+		X: x,
+		Y: y,
+		Answer: answer,
+		Action: action,
+	}
 
 	b, err := json.Marshal(result)
 	if err != nil {

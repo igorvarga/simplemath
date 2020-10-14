@@ -49,7 +49,6 @@ func TestMathHandlers(t *testing.T) {
 					status, http.StatusOK)
 			}
 
-			// expected := fmt.Sprintf(`{"action": "%v", "x": %v, "y": %v, "answer", %v, "cached": false}`, mt.action, mt.x, mt.y, mt.expected)
 			expected, err := json.Marshal(message.ResultMessage{
 				Action: mt.action,
 				X:      mt.x,
