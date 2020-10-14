@@ -116,7 +116,7 @@ func extractParams(w http.ResponseWriter, r *http.Request) (x float64, y float64
 func writeJSON(w http.ResponseWriter, status int, v interface{}) {
 	b, err := json.Marshal(v)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

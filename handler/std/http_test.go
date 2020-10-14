@@ -25,7 +25,7 @@ var basicmathtests = []struct {
 		{x: 10, y: 5, expected: 2, handler: DivideHandler, name: "DivideHandler", action: message.ActionDivide, path: "/divide"},
 	}
 
-func TestMathHandlers(t *testing.T) {
+func TestMathHTTPHandlers(t *testing.T) {
 
 	for _, mt := range basicmathtests {
 		t.Run(mt.name, func(t *testing.T) {
