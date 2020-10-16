@@ -3,7 +3,7 @@ package std
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/igorvarga/teletchcodechallenge/message"
+	"github.com/igorvarga/teltechcodechallenge/message"
 	"net/http"
 	"net/http/httptest"
 	"net/url"

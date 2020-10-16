@@ -2,8 +2,8 @@ package std
 
 import (
 	"encoding/json"
-	"github.com/igorvarga/teletchcodechallenge/message"
-	"github.com/igorvarga/teletchcodechallenge/simplemath"
+	"github.com/igorvarga/teltechcodechallenge/message"
+	"github.com/igorvarga/teltechcodechallenge/simplemath"
 	"log"
 	"net/http"
 	"strconv"
