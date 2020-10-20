@@ -1,10 +1,10 @@
-FROM golang:1.15
+FROM golang:1.15 AS golang
 
 RUN git config --global url."https://igorvarga:$GROUP_ID@github.com".insteadOf "https://github.com"
 RUN go get github.com/igorvaga/teltechcodechallenge
 
 ENV APP_USER app
-ENV APP_HOME /home/simplemath
+ENV APP_HOME /go/src/github.com/igorvaga/teltechcodechallenge
 
 ARG GROUP_ID
 ARG USER_ID
