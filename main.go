@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/igorvarga/teletchcodechallenge/handler/std"
+	"github.com/igorvarga/teltechcodechallenge/handler/std"
 	"log"
 	"net/http"
 )
