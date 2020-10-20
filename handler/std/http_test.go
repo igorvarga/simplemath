@@ -3,7 +3,7 @@ package std
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/igorvarga/teletchcodechallenge/message"
+	"github.com/igorvarga/teltechcodechallenge/message"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -33,15 +33,15 @@ func TestMathHTTPHandlers(t *testing.T) {
 				"x": {fmt.Sprintf("%v", mt.x)},
 				"y": {fmt.Sprintf("%v", mt.y)}}
 
-			url := url.URL{Path: mt.path, RawQuery: values.Encode()}
+			newurl := url.URL{Path: mt.path, RawQuery: values.Encode()}
 
-			req, err := http.NewRequest(http.MethodGet, url.String(), nil)
+			req, err := http.NewRequest(http.MethodGet, newurl.String(), nil)
 			if err != nil {
 				t.Fatal(err)
 			}
 
 			rr := httptest.NewRecorder()
-			handler := http.HandlerFunc(mt.handler)
+			handler := mt.handler
 			handler.ServeHTTP(rr, req)
 
 			if status := rr.Code; status != http.StatusOK {
@@ -75,9 +75,9 @@ func TestAddHandlerXMissing(t *testing.T) {
 	values := url.Values{
 		"y": {"5"}}
 
-	url := url.URL{Path: "/add", RawQuery: values.Encode()}
+	newurl := url.URL{Path: "/add", RawQuery: values.Encode()}
 
-	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
+	req, err := http.NewRequest(http.MethodGet, newurl.String(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -96,9 +96,9 @@ func TestAddHandlerYMissing(t *testing.T) {
 	values := url.Values{
 		"x": {"5"}}
 
-	url := url.URL{Path: "/add", RawQuery: values.Encode()}
+	newurl := url.URL{Path: "/add", RawQuery: values.Encode()}
 
-	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
+	req, err := http.NewRequest(http.MethodGet, newurl.String(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
