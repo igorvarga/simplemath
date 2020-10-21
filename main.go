@@ -16,7 +16,16 @@ func handleRequests() {
 	http.HandleFunc("/divide", std.DivideHandler)
 	http.HandleFunc("/multiply", std.MultiplyHandler)
 
-	log.Fatal(http.ListenAndServe(":10000", nil))
+	log.Println("Starting server.")
+
+	err := http.ListenAndServe(":80", nil)
+
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		log.Println("Server started successfully.")
+	}
+
 }
 
 func main() {
