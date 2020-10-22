@@ -5,6 +5,15 @@ import (
 	"time"
 )
 
+type Cache interface {
+	Load(key string) (it item, ok bool)
+	Store(key string, it item)
+}
+
+type Item interface {
+	Created() time.Time
+}
+
 type cache struct {
 	sync.Mutex
 	storage map[string]item
@@ -15,10 +24,21 @@ type item struct {
 	created time.Time
 }
 
-func NewCache() cache {
-	return cache{
+func (i item) Created() time.Time {
+	panic("implement me")
+}
+
+func NewCache() Cache {
+	return &cache{
 		Mutex:   sync.Mutex{},
 		storage: make(map[string]item),
+	}
+}
+
+func NewItem(p *[]byte) Item {
+	return &item{
+		payload: p,
+		created: time.Time{},
 	}
 }
 
