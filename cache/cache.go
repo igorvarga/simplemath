@@ -1,10 +1,41 @@
 package cache
 
-import "time"
+import (
+	"sync"
+	"time"
+)
 
-var Cache = make(map[string]Item)
+type cache struct {
+	sync.Mutex
+	storage map[string]item
+}
 
-type Item struct {
-	Payload *[]byte
-	Created time.Time
+type item struct {
+	payload *[]byte
+	created time.Time
+}
+
+func NewCache() cache {
+	return cache{
+		Mutex:   sync.Mutex{},
+		storage: make(map[string]item),
+	}
+}
+
+func (c *cache) Load(key string) (it item, ok bool) {
+	c.Lock()
+
+	defer c.Unlock()
+
+	it, ok = c.storage[key]
+
+	return it, ok
+}
+
+func (c *cache) Store(key string, it item) {
+	c.Lock()
+
+	c.storage[key] = it
+
+	c.Unlock()
 }
