@@ -6,56 +6,70 @@ import (
 )
 
 type Cache interface {
-	Load(key string) (it item, ok bool)
-	Store(key string, it item)
+	Load(key string) (i Item, ok bool)
+	Store(key string, value *[]byte)
+	ItemExpired(key string) (expired bool, ok bool)
 }
 
 type Item interface {
-	Created() time.Time
+	Value() *[]byte
+	Expires() time.Time
 }
 
 type cache struct {
 	sync.Mutex
-	storage map[string]item
+	storage    map[string]Item
+	expiration time.Duration
 }
 
 type item struct {
-	payload *[]byte
-	created time.Time
+	value   *[]byte
+	expires time.Time
 }
 
-func (i item) Created() time.Time {
-	panic("implement me")
+func (i *item) Value() *[]byte {
+	return i.value
 }
 
-func NewCache() Cache {
+func (i *item) Expires() time.Time {
+	return i.expires
+}
+
+func (c *cache) ItemExpired(key string) (expired bool, ok bool) {
+	if i, ok := c.Load(key); ok {
+		return i.Expires().Before(time.Now()), true
+	}
+
+	return false, false
+}
+
+func NewCache(expiration time.Duration) Cache {
 	return &cache{
-		Mutex:   sync.Mutex{},
-		storage: make(map[string]item),
+		Mutex:      sync.Mutex{},
+		storage:    make(map[string]Item),
+		expiration: expiration,
 	}
 }
 
-func NewItem(p *[]byte) Item {
-	return &item{
-		payload: p,
-		created: time.Time{},
-	}
-}
-
-func (c *cache) Load(key string) (it item, ok bool) {
+func (c *cache) Load(key string) (i Item, ok bool) {
 	c.Lock()
 
 	defer c.Unlock()
 
-	it, ok = c.storage[key]
+	i, ok = c.storage[key]
 
-	return it, ok
+	return i, ok
 }
 
-func (c *cache) Store(key string, it item) {
+func (c *cache) Store(key string, value *[]byte) {
 	c.Lock()
 
-	c.storage[key] = it
+	i := &item{
+		value:   value,
+		expires: time.Now().Add(c.expiration),
+	}
+
+	c.storage[key] = i
 
 	c.Unlock()
 }
