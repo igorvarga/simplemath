@@ -1,24 +1,35 @@
 package main
 
 import (
-	"github.com/igorvarga/teletchcodechallenge/handler/std"
+	"github.com/igorvarga/teltechcodechallenge/cache"
+	. "github.com/igorvarga/teltechcodechallenge/server"
 	"log"
 	"net/http"
+	"time"
 )
 
-// TODO Add REST API versioning
-// TODO Add godoc
-// TODO Add logging
+// TODO AddHandler REST API versioning
+// TODO AddHandler godoc
+// TODO AddHandler logging
 
-func handleRequests() {
-	http.HandleFunc("/add", std.AddHandler)
-	http.HandleFunc("/subtract", std.SubtractHandler)
-	http.HandleFunc("/divide", std.DivideHandler)
-	http.HandleFunc("/multiply", std.MultiplyHandler)
-
-	log.Fatal(http.ListenAndServe(":10000", nil))
-}
+// TODO Get parameters from env variables
+var (
+	addr     = ":80"
+)
 
 func main() {
-	handleRequests()
+	c := cache.NewCache(time.Minute, 5 * time.Minute)
+	s := NewSimpleMathServer(c)
+
+	http.HandleFunc("/add", s.CacheMiddleware(s.AddHandler))
+	http.HandleFunc("/subtract", s.CacheMiddleware(s.SubtractHandler))
+	http.HandleFunc("/divide", s.CacheMiddleware(s.DivideHandler))
+	http.HandleFunc("/multiply", s.CacheMiddleware(s.MultiplyHandler))
+
+	log.Printf("Server started on %v", addr)
+
+	err := http.ListenAndServe(addr, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
