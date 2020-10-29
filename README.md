@@ -1,5 +1,6 @@
-# Simple Math App
+[![<igorvarga>](https://circleci.com/gh/igorvarga/simplemath.svg?style=svg)](https://circleci.com/gh/igorvarga/simplemath)
 
+# Simple Math App
 Simple web application in Go which accepts math problems via the URL and returns the response in JSON.
 
 ## How to run it
@@ -38,22 +39,21 @@ cd %GOPATH%\src\github.com\igorvarga\simplemath
 go run main.go
 ```
 
-### Build
+## Build
 ```shell script
 cd %GOPATH%\src\github.com\igorvarga\simplemath
 go build .
 ```
 
-### Try it
+## Try it
 ```shell script
 curl "http://localhost:8080/add?x=2&y=7"
 ```
 
-### Deploying to cloud
+## Deploying to cloud
 Connect CircleCI for building and deploying steps to any cloud provider supported by CircleCI.
 
 ## TODO
-
 - [ ] Use .env for configuration
 - [ ] Init project as go module
 - [ ] Add docker (dev/docker branch) 
