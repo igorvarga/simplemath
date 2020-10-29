@@ -11,6 +11,7 @@ import (
 	"strconv"
 )
 
+// SimpleMathServer is used as struct which contains Cache instance, http handlers and cache middleware.
 type SimpleMathServer struct {
 	cache Cache
 }
@@ -100,6 +101,7 @@ func (s *SimpleMathServer) MultiplyHandler(w http.ResponseWriter, r *http.Reques
 }
 
 func (s *SimpleMathServer) cacheResult(x float64, y float64, result message.ResultMessage) {
+	//TODO Move logic from this func to Cache
 	key := fmt.Sprint(x, ":", y)
 
 	_, ok := s.cache.Load(key)
@@ -118,8 +120,11 @@ func (s *SimpleMathServer) cacheResult(x float64, y float64, result message.Resu
 	s.cache.Store(key, b)
 }
 
+// CacheMiddleware is serving cached JSON (marshalled) result if the key is present in the Cache and HandlerFunc
+// which matches request path won't be executed.
 func (s *SimpleMathServer) CacheMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		//TODO Store x,y parameters in context to avoid double parse later in the chain
 		x, y, err := s.extractParams(w, r)
 		if err != nil {
 			log.Printf("Unable to extract params for query %v", r.URL.RawQuery)
@@ -149,7 +154,6 @@ func (s *SimpleMathServer) CacheMiddleware(next http.HandlerFunc) http.HandlerFu
 }
 
 func (s *SimpleMathServer) extractParams(w http.ResponseWriter, r *http.Request) (x float64, y float64, err error) {
-
 	x, err = strconv.ParseFloat(r.URL.Query().Get("x"), 64)
 	if err != nil {
 		result := message.ErrorMessage{

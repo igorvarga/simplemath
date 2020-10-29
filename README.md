@@ -50,6 +50,12 @@ go build .
 curl "http://localhost:8080/add?x=2&y=7"
 ```
 
+## Running tests
+```shell script
+cd %GOPATH%\src\github.com\igorvarga\simplemath
+go test ./...
+```
+
 ## Deploying to cloud
 Connect CircleCI for building and deploying steps to any cloud provider supported by CircleCI.
 
@@ -59,9 +65,10 @@ Connect CircleCI for building and deploying steps to any cloud provider supporte
 - [ ] Add docker (dev/docker branch) 
 - [ ] Add client cache HTTP headers
 - [ ] Introduce context cancellation to all layers
-- [ ] Stress test, introduce cache memory limit
-- [ ] Add leaky bucket feature to cache
+- [ ] Add leaky bucket feature to cache, map memory limit
 - [ ] Explore RWMutex
-- [ ] Refactor old server code
+- [ ] Refactor server and cache structs and interfaces to be more specific about their functionality
 - [ ] Explore sync.Map
-- [ ] Performance, race and memory profiling tests
+- [ ] Benchmark, sync race and memory profiling tests
+- [ ] Write better godoc and tests
+- [ ] REST API versioning

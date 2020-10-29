@@ -6,12 +6,30 @@ import (
 	"time"
 )
 
+// Cache is time aware least recently used (TLRU) cache implementation backed by memory map store.
+// It is safe for concurrent use with help of sync.Mutex
+//
+// Separate sweeping process is started in intervals to evict expired items from the cache. Only one sweeping process
+// can run at the same time.
+//
+// Load loads Item from the cache and slides the expiry timestamp to current time if the Item exists.
+//
+// Store stores value of the item to the cache. Item is created with timestamp and stored in map.
+// Existing Item is overwritten regardless of the expiry condition.
+//
+// ItemExpired checks expiry of the Item in the cache store and returns true if Item is expired.
+// If the Item exists in the cache it will be returned, otherwise i returns nil.
+// Used mostly for testing purposes.
 type Cache interface {
 	Load(key string) (i Item, ok bool)
 	Store(key string, value interface{})
 	ItemExpired(key string) (expired bool, i Item)
 }
 
+// Item holds value and timestamp that is used for sweeping process and expiration checks
+//
+// Value gets the data stored in the cache Item
+// Expires returns timestamp set during Cache.Store execution
 type Item interface {
 	Value() interface{}
 	Expires() time.Time
@@ -82,6 +100,7 @@ func (s *sweeper) start(c *cache) {
 			case <-s.stop:
 				{
 					s.ticker.Stop()
+					s.started = false
 					return
 				}
 			}
@@ -111,7 +130,7 @@ func (c *cache) sweep() {
 	c.Unlock()
 
 }
-
+// NewCache creates new cache and starts the sweeper in goroutine after the Cache creation.
 func NewCache(expiration time.Duration, sweepInterval time.Duration) Cache {
 	return newCache(expiration, sweepInterval)
 }

@@ -9,10 +9,6 @@ import (
 	"time"
 )
 
-// TODO AddHandler REST API versioning
-// TODO AddHandler godoc
-// TODO AddHandler logging
-
 var (
 	addr          = GetEnv("SM_ADDR", ":8080")
 	expiration    = GetEnvInt64("SM_CACHE_EXPIRATION", 60)
@@ -28,6 +24,9 @@ func main() {
 	http.HandleFunc("/subtract", s.CacheMiddleware(s.SubtractHandler))
 	http.HandleFunc("/divide", s.CacheMiddleware(s.DivideHandler))
 	http.HandleFunc("/multiply", s.CacheMiddleware(s.MultiplyHandler))
+
+	log.Printf("SM_CACHE_EXPIRATION=%v", expiration)
+	log.Printf("SM_CACHE_SWEEPINTERVAL=%v", sweepinterval)
 
 	log.Printf("Server started on %v", addr)
 
