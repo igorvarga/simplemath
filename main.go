@@ -16,7 +16,7 @@ import (
 var (
 	addr          = GetEnv("SM_ADDR", ":8080")
 	expiration    = GetEnvInt64("SM_CACHE_EXPIRATION", 60)
-	sweepinterval = GetEnvInt64("SM_CACHE_EXPIRATION", 5)
+	sweepinterval = GetEnvInt64("SM_CACHE_SWEEPINTERVAL", 5)
 )
 
 func main() {

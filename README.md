@@ -8,38 +8,40 @@ environment variable set.
 
 ### Get the project
 ```shell script
-go get https://github.com/igorvarga/teltechcodechallenge
+go get https://github.com/igorvarga/simplemath
 ```
 
 ### Configure Server parameters (Optional step)
 Server can be configured using environment variables listed below. In case that environment variables are missing the 
 default values will be used.
 
-#### SM_ADDR
-Server address string in addreess:port format, default value: ":8080"  
-
-#### SM_CACHE_EXPIRATION
-Cache item expiry in seconds, default value: 60
-
-#### SM_CACHE_EXPIRATION
-Cache expred items sweep interval in seconds, default value 5
-  
-#### Configuration examples
+Variable | Description
+------------ | -------------
+SM_ADDR | Server address string in addreess:port format, default value: ":8080"
+SM_CACHE_EXPIRATION | Cache item expiry in seconds, default value: 60
+SM_CACHE_SWEEPINTERVAL | Expired cache items sweep interval in seconds, default value 5
 
 ***Windows***
 ```shell script
 SET SM_ADDR=":9090"
 SET SM_CACHE_EXPIRATION=30
-SET SM_CACHE_EXPIRATION=5
+SET SM_CACHE_SWEEPINTERVAL=5
 ```
 
 ***Linux***
+
 Substitute SET with EXPORT keyword
 
-### Run the server
+### Run
 ```shell script
-cd %GOPATH%/github.com/igorvarga/teltechcodechallenge
+cd %GOPATH%\src\github.com\igorvarga\simplemath
 go run main.go
+```
+
+### Build
+```shell script
+cd %GOPATH%\src\github.com\igorvarga\simplemath
+go build .
 ```
 
 ### Try it
@@ -52,8 +54,14 @@ Connect CircleCI for building and deploying steps to any cloud provider supporte
 
 ## TODO
 
--[ ] Use .env for configuration
--[ ] Init project as go module
--[ ] Add docker (dev/docker branch) 
--[ ] Add client cache HTTP headers
--[ ] Introduce context cancellation to all layers
+- [ ] Use .env for configuration
+- [ ] Init project as go module
+- [ ] Add docker (dev/docker branch) 
+- [ ] Add client cache HTTP headers
+- [ ] Introduce context cancellation to all layers
+- [ ] Stress test, introduce cache memory limit
+- [ ] Add leaky bucket feature to cache
+- [ ] Explore RWMutex
+- [ ] Refactor old server code
+- [ ] Explore sync.Map
+- [ ] Performance, race and memory profiling tests

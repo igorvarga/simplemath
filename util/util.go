@@ -10,7 +10,7 @@ func GetEnvInt64(key string, fallback int64) int64 {
 	if value, ok := os.LookupEnv(key); ok {
 		i, err := strconv.ParseInt(value, 10, 32)
 		if err != nil {
-			log.Fatalf("Unable to convert environemt variable %v=%v to in64.")
+			log.Fatalf("Unable to convert environemt variable %v=%v to int64.", key, value)
 		}
 		return i
 	}
