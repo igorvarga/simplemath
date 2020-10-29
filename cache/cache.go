@@ -1,7 +1,6 @@
 package cache
 
 import (
-	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -77,7 +76,7 @@ func (s *sweeper) start(c *cache) {
 			select {
 			case t := <-s.ticker.C:
 				{
-					fmt.Println("Running sweep at", t)
+					log.Println("Running sweep at", t)
 					c.sweep()
 				}
 			case <-s.stop:

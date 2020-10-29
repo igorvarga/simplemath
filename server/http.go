@@ -111,7 +111,7 @@ func (s *SimpleMathServer) cacheResult(w http.ResponseWriter, x float64, y float
 
 	b, err := json.Marshal(result)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Printf("Marshalling result error: %v", err.Error())
 		return
 	}
 
@@ -123,6 +123,7 @@ func (s *SimpleMathServer) CacheMiddleware(next http.HandlerFunc) http.HandlerFu
 		x, y, err := s.extractParams(w, r)
 		if err != nil {
 			log.Printf("Unable to extract params for query %v", r.URL.RawQuery)
+			return
 		}
 
 		key := fmt.Sprint(x, ":", y)
@@ -140,7 +141,7 @@ func (s *SimpleMathServer) CacheMiddleware(next http.HandlerFunc) http.HandlerFu
 			return
 		}
 
-		log.Println("Cache not found, calling next handler.")
+		log.Println("Cache item not found, calling next handler.")
 
 		next.ServeHTTP(w, r)
 
@@ -156,6 +157,8 @@ func (s *SimpleMathServer) extractParams(w http.ResponseWriter, r *http.Request)
 			Error: "Error parsing x parameter",
 		}
 
+		log.Printf("Error parsing x parameter from query: %v", r.URL.RawQuery)
+
 		s.writeJSON(w, http.StatusBadRequest, result)
 
 		return x, y, err
@@ -167,6 +170,8 @@ func (s *SimpleMathServer) extractParams(w http.ResponseWriter, r *http.Request)
 			Code:  "1",
 			Error: "Error parsing y parameter",
 		}
+
+		log.Printf("Error parsing y parameter from query: %v", r.URL.RawQuery)
 
 		s.writeJSON(w, http.StatusBadRequest, result)
 
@@ -189,4 +194,5 @@ func (s *SimpleMathServer) writeJSON(w http.ResponseWriter, status int, v interf
 	if err != nil {
 		log.Fatal("Unable to write JSON response.")
 	}
+
 }

@@ -2,6 +2,7 @@ package cache
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"testing"
 	"time"
@@ -50,7 +51,7 @@ func TestCache_Slide(t *testing.T) {
 
 	expired, _ := c.ItemExpired(key)
 
-	fmt.Printf("Expired %v \n", expired)
+	log.Printf("Expired %v \n", expired)
 
 	time.Sleep(250 * time.Millisecond)
 

@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/igorvarga/teltechcodechallenge/cache"
 	. "github.com/igorvarga/teltechcodechallenge/server"
+	. "github.com/igorvarga/teltechcodechallenge/util"
 	"log"
 	"net/http"
 	"time"
@@ -12,13 +13,15 @@ import (
 // TODO AddHandler godoc
 // TODO AddHandler logging
 
-// TODO Get parameters from env variables
 var (
-	addr     = ":80"
+	addr          = GetEnv("SM_ADDR", ":8080")
+	expiration    = GetEnvInt64("SM_CACHE_EXPIRATION", 60)
+	sweepinterval = GetEnvInt64("SM_CACHE_EXPIRATION", 5)
 )
 
 func main() {
-	c := cache.NewCache(time.Minute, 5 * time.Minute)
+
+	c := cache.NewCache(time.Duration(expiration)*time.Second, time.Duration(sweepinterval)*time.Second)
 	s := NewSimpleMathServer(c)
 
 	http.HandleFunc("/add", s.CacheMiddleware(s.AddHandler))
@@ -33,3 +36,4 @@ func main() {
 		log.Fatal(err)
 	}
 }
+
