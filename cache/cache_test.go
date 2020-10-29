@@ -2,7 +2,6 @@ package cache
 
 import (
 	"fmt"
-	"log"
 	"math/rand"
 	"testing"
 	"time"
@@ -27,17 +26,11 @@ func NewTCache(expiration time.Duration, interval time.Duration) TCache {
 func TestCache_Expired(t *testing.T) {
 	key := fmt.Sprint(rand.Int())
 
-	c := NewTCache(time.Duration(10), time.Second)
+	c := NewTCache(200 * time.Millisecond, time.Second)
 
 	c.Store(key, nil)
 
-	c.Store(key, nil)
-
-	v, _ := c.Load(key)
-
-	log.Printf("Found value in cache %v", v.Value())
-
-	time.Sleep(200)
+	time.Sleep(300 * time.Millisecond)
 
 	expired, _ := c.ItemExpired(key)
 
@@ -48,8 +41,34 @@ func TestCache_Expired(t *testing.T) {
 	c.StopSweeper()
 }
 
+func TestCache_Slide(t *testing.T) {
+	key := fmt.Sprint(rand.Int())
+
+	c := NewTCache(500 * time.Millisecond, time.Second)
+
+	c.Store(key, nil)
+
+	expired, _ := c.ItemExpired(key)
+
+	fmt.Printf("Expired %v \n", expired)
+
+	time.Sleep(250 * time.Millisecond)
+
+	_, _ = c.Load(key)
+
+	time.Sleep(400 * time.Millisecond)
+
+	expired, _ = c.ItemExpired(key)
+
+	if expired {
+		t.Errorf("ItemExpired() = %v, want false", expired)
+	}
+
+	c.StopSweeper()
+}
+
 func TestCache_Eviction(t *testing.T) {
-	c := NewTCache(time.Duration(10), time.Second)
+	c := NewTCache(time.Duration(10), 200 * time.Millisecond)
 
 	key := fmt.Sprint(rand.Int())
 
@@ -59,7 +78,7 @@ func TestCache_Eviction(t *testing.T) {
 
 	c.Store(key1, nil)
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(300 * time.Millisecond)
 
 	size := len(c.storage)
 

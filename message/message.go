@@ -13,7 +13,7 @@ type ResultMessage struct {
 	X      float64 `json:"x"`
 	Y      float64 `json:"y"`
 	Answer float64 `json:"answer"`
-	Cached bool    `json:"cached"`
+	Cached string    `json:"cached,omitempty"`
 }
 
 type ErrorMessage struct {

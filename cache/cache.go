@@ -9,8 +9,8 @@ import (
 
 type Cache interface {
 	Load(key string) (i Item, ok bool)
-	Store(key string, value interface{}) (ok bool)
-	ItemExpired(key string) (expired bool, ok bool)
+	Store(key string, value interface{})
+	ItemExpired(key string) (expired bool, i Item)
 }
 
 type Item interface {
@@ -46,7 +46,7 @@ func (i *item) Expires() time.Time {
 	return i.expires
 }
 
-func (c *cache) ItemExpired(key string) (expired bool, ok bool) {
+func (c *cache) ItemExpired(key string) (expired bool, i Item) {
 	c.Lock()
 
 	defer c.Unlock()
@@ -54,12 +54,12 @@ func (c *cache) ItemExpired(key string) (expired bool, ok bool) {
 	return c.itemExpired(key)
 }
 
-func (c *cache) itemExpired(key string) (expired bool, ok bool) {
-	if i, ok := c.load(key); ok {
-		return i.Expires().Before(time.Now()), true
+func (c *cache) itemExpired(key string) (expired bool, i Item) {
+	if i, ok := c.loadNoSlide(key); ok {
+		return i.Expires().Before(time.Now()), i
 	}
 
-	return false, false
+	return false, nil
 }
 
 func (s *sweeper) start(c *cache) {
@@ -113,20 +113,20 @@ func (c *cache) sweep() {
 
 }
 
-func NewCache(expiration time.Duration, interval time.Duration) Cache {
-	return newCache(expiration, interval)
+func NewCache(expiration time.Duration, sweepInterval time.Duration) Cache {
+	return newCache(expiration, sweepInterval)
 }
 
-func newCache(expiration time.Duration, interval time.Duration) *cache {
+func newCache(expiration time.Duration, sweepInterval time.Duration) *cache {
 	c := &cache{
 		Mutex:      sync.Mutex{},
 		storage:    make(map[string]Item),
 		expiration: expiration,
 		sweeper: sweeper{
-			interval: interval,
+			interval: sweepInterval,
 			sweeping: false,
 			started:  false,
-			stop: make(chan bool),
+			stop:     make(chan bool),
 		},
 	}
 
@@ -146,30 +146,35 @@ func (c *cache) Load(key string) (i Item, ok bool) {
 func (c *cache) load(key string) (i Item, ok bool) {
 	i, ok = c.storage[key]
 
+	if ok {
+		// slide the expiry on access
+		// TODO explore option of using pointers here
+		i = c.newItem(i.Value())
+		c.storage[key] = i
+	}
+
 	return i, ok
 }
 
-func (c *cache) Store(key string, value interface{}) (ok bool) {
+func (c *cache) loadNoSlide(key string) (i Item, ok bool) {
+	i, ok = c.storage[key]
+
+	return i, ok
+}
+
+func (c *cache) Store(key string, value interface{}) {
 	c.Lock()
 
-	defer c.Unlock()
+	c.store(key, value)
 
-	return c.store(key, value)
+	c.Unlock()
 }
 
-func (c *cache) store(key string, value interface{}) (ok bool) {
-	expired, ok := c.itemExpired(key)
-
-	if !expired && ok {
-		return false
-	}
-
+func (c *cache) store(key string, value interface{}) {
 	c.storage[key] = c.newItem(value)
-
-	return true
 }
 
-func (c *cache) newItem(value interface{}) *item {
+func (c *cache) newItem(value interface{}) Item {
 	return &item{
 		value:   value,
 		expires: time.Now().Add(c.expiration),
