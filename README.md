@@ -22,36 +22,36 @@ SM_ADDR | Server address string in addreess:port format, default value: ":8080"
 SM_CACHE_EXPIRATION | Cache item expiry in seconds, default value: 60
 SM_CACHE_SWEEPINTERVAL | Expired cache items sweep interval in seconds, default value 5
 
-***Windows***
-```shell script
+***Windows example***
+```batch
 SET SM_ADDR=":9090"
 SET SM_CACHE_EXPIRATION=30
 SET SM_CACHE_SWEEPINTERVAL=5
 ```
 
-***Linux***
+***Linux example***
 
 Substitute SET with EXPORT keyword
 
 ### Run
-```shell script
+```batch
 cd %GOPATH%\src\github.com\igorvarga\simplemath
 go run main.go
 ```
 
 ## Build
-```shell script
+```batch
 cd %GOPATH%\src\github.com\igorvarga\simplemath
 go build .
 ```
 
 ## Try it
-```shell script
+```shell-script
 curl "http://localhost:8080/add?x=2&y=7"
 ```
 
 ## Running tests
-```shell script
+```batch
 cd %GOPATH%\src\github.com\igorvarga\simplemath
 go test ./...
 ```
