@@ -8,7 +8,7 @@ jobs:
       # specify the version
       - image: circleci/golang:1.9
 
-    working_directory: /go/src/github.com/igorvarga/teltechcodechallenge
+    working_directory: /go/src/github.com/igorvarga/simplemath
     steps:
       - checkout
 

@@ -3,9 +3,9 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	. "github.com/igorvarga/teltechcodechallenge/cache"
-	"github.com/igorvarga/teltechcodechallenge/message"
-	"github.com/igorvarga/teltechcodechallenge/simplemath"
+	. "github.com/igorvarga/simplemath/cache"
+	"github.com/igorvarga/simplemath/message"
+	"github.com/igorvarga/simplemath/simplemath"
 	"log"
 	"net/http"
 	"strconv"
@@ -36,7 +36,7 @@ func (s *SimpleMathServer) AddHandler(w http.ResponseWriter, r *http.Request) {
 
 	s.writeJSON(w, http.StatusOK, result)
 
-	s.cacheResult(w, x, y, result)
+	s.cacheResult(x, y, result)
 }
 
 func (s *SimpleMathServer) SubtractHandler(w http.ResponseWriter, r *http.Request) {
@@ -56,7 +56,7 @@ func (s *SimpleMathServer) SubtractHandler(w http.ResponseWriter, r *http.Reques
 
 	s.writeJSON(w, http.StatusOK, result)
 
-	s.cacheResult(w, x, y, result)
+	s.cacheResult(x, y, result)
 }
 
 func (s *SimpleMathServer) DivideHandler(w http.ResponseWriter, r *http.Request) {
@@ -76,7 +76,7 @@ func (s *SimpleMathServer) DivideHandler(w http.ResponseWriter, r *http.Request)
 
 	s.writeJSON(w, http.StatusOK, result)
 
-	s.cacheResult(w, x, y, result)
+	s.cacheResult(x, y, result)
 }
 
 func (s *SimpleMathServer) MultiplyHandler(w http.ResponseWriter, r *http.Request) {
@@ -96,10 +96,10 @@ func (s *SimpleMathServer) MultiplyHandler(w http.ResponseWriter, r *http.Reques
 
 	s.writeJSON(w, http.StatusOK, result)
 
-	s.cacheResult(w, x, y, result)
+	s.cacheResult(x, y, result)
 }
 
-func (s *SimpleMathServer) cacheResult(w http.ResponseWriter, x float64, y float64, result message.ResultMessage) {
+func (s *SimpleMathServer) cacheResult(x float64, y float64, result message.ResultMessage) {
 	key := fmt.Sprint(x, ":", y)
 
 	_, ok := s.cache.Load(key)

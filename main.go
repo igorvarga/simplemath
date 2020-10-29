@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/igorvarga/teltechcodechallenge/cache"
-	. "github.com/igorvarga/teltechcodechallenge/server"
-	. "github.com/igorvarga/teltechcodechallenge/util"
+	"github.com/igorvarga/simplemath/cache"
+	. "github.com/igorvarga/simplemath/server"
+	. "github.com/igorvarga/simplemath/util"
 	"log"
 	"net/http"
 	"time"

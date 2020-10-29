@@ -3,8 +3,8 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/igorvarga/teltechcodechallenge/cache"
-	"github.com/igorvarga/teltechcodechallenge/message"
+	"github.com/igorvarga/simplemath/cache"
+	"github.com/igorvarga/simplemath/message"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
