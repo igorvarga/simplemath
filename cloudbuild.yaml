@@ -1,0 +1,4 @@
+steps:
+  - name: gcr.io/cloud-builders/go
+    id: go-build
+    args: ['build', '-o', 'simplemath', '.']
